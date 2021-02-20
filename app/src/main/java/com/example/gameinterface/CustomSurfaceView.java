@@ -12,6 +12,7 @@ public class CustomSurfaceView extends SurfaceView {
     public CustomSurfaceView(Context context, AttributeSet attrs){
         super(context, attrs);
         setWillNotDraw(false);
+        setBackgroundColor(Color.WHITE);  // Make Background White
     }
 
     protected void onDraw(Canvas canvas){
