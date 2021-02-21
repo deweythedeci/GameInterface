@@ -14,6 +14,9 @@ import java.util.ArrayList;
 
 public class CustomSurfaceView extends SurfaceView {
 
+    private float cardHeight = 240;
+    private float cardWidth = 180;
+
     public CustomSurfaceView(Context context, AttributeSet attrs){
         super(context, attrs);
         setWillNotDraw(false);
@@ -25,9 +28,29 @@ public class CustomSurfaceView extends SurfaceView {
     }
 
     protected void onDraw(Canvas canvas){
-        drawFighterCard(canvas, 100, 200, "Skeleton", 7, 3,
+        drawFighterCard(canvas, 50, 400, "Orc", 2, 8,
+                true);
+        drawFighterCard(canvas, 50, 700, "Ghost", 5, 5,
                 false);
-        drawSpellCard(canvas, 400, 200, "Might", 2, 1,+3,
+        drawFighterCard(canvas, 50, 1000, "Dragon", 10, 3,
+                true);
+        drawFighterCard(canvas, 50, 1300, "Skeleton", 7, 3,
+                false);
+        drawFighterCard(canvas, 50, 1600, "Goblin", 1, 10,
+                false);
+        drawSpellCard(canvas, 300, 400, "Healing", 1, 1,+4,
+                false, "", false);
+        drawSpellCard(canvas, 300, 700, "Blizzard", 4, 1,-6,
+                false, "", false);
+        drawFaceDownCard(canvas, 300, 1000, Color.GRAY);
+
+        drawSpellCard(canvas, 50, 2000, "Might", 4, 2,+5,
+                false, "", false);
+        //yes this is weird and there is some bug going on but it works for now
+        drawSpellCard(canvas, 350, 2000, "Morph", 0, 3,0,
+                true, "Discard targetfighter and        .draw a new     .one",
+                true);
+        drawSpellCard(canvas, 650, 2000, "Giantism", 10, 2,+12,
                 false, "", true);
     }
 
@@ -35,28 +58,37 @@ public class CustomSurfaceView extends SurfaceView {
     //x and y are the top left corner of the card
     protected void drawFighterCard(Canvas canvas, float x, float y, String fighterName,
                                    int power, int prizeGold, boolean hasBet){
+
+        //draws a yellow translucent border around the card if you've placed a bet on it
+        if(hasBet){
+            Paint outlinePaint = new Paint();
+            outlinePaint.setColor(0x70FFD700);
+            outlinePaint.setStyle(Paint.Style.STROKE);
+            outlinePaint.setStrokeWidth(10.0f);
+            canvas.drawRect(x - 10.0f, y - 10.0f, x + cardWidth + 10.0f, y + cardHeight + 10.0f,
+                    outlinePaint);
+        }
+
         drawCardOutline(canvas, x, y);
         drawCardTitle(canvas, x, y, fighterName);
 
         //draws the circle for the fighter's power
         Paint red = new Paint();
         red.setColor(Color.RED);
-        canvas.drawCircle(x + 50.0f, y + 250.0f, 30.0f, red);
+        canvas.drawCircle(x + 40.0f, y + cardHeight - 40.0f, 25.0f, red);
 
         //draws the circle for the fighter's prize gold
         Paint gold = new Paint();
-        gold.setColor(Color.YELLOW);
-        canvas.drawCircle(x + 175.0f, y + 250.0f, 30.0f, gold);
+        gold.setColor(0xFFFFD700);
+        canvas.drawCircle(x + cardWidth - 40.0f, y + cardHeight - 40.0f, 25.0f, gold);
 
         //draws the text for the fighter's stats
         Paint statText = new Paint();
         statText.setColor(Color.BLACK);
-        statText.setTextSize(50);
+        statText.setTextSize(40);
         statText.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText(Integer.toString(power), x + 50.0f, y + 270.0f, statText);
-        canvas.drawText(Integer.toString(prizeGold), x + 175.0f, y + 270.0f, statText);
-
-        //draws a yellow translucent border around the card if hasBet is true
+        canvas.drawText(Integer.toString(power), x + 40.0f, y + cardHeight - 25.0f, statText);
+        canvas.drawText(Integer.toString(prizeGold), x + cardWidth - 40.0f, y + cardHeight - 25.0f, statText);
 
     }
 
@@ -81,36 +113,38 @@ public class CustomSurfaceView extends SurfaceView {
                 spellTypeSymbolPaint.setColor(Color.BLUE);
                 break;
             case 3:
-                spellTypeSymbolPaint.setColor(Color.YELLOW);
+                spellTypeSymbolPaint.setColor(0xFFFFD700);
                 break;
         }
-        canvas.drawCircle(x + 30.0f, y + 90.0f, 15.0f, spellTypeSymbolPaint);
+        canvas.drawCircle(x + 25.0f, y + 75.0f, 12.5f, spellTypeSymbolPaint);
 
         //draws mana cost on the card
-        Paint manaTextPaint = new Paint();
-        manaTextPaint.setColor(Color.BLACK);
-        manaTextPaint.setTextAlign(Paint.Align.CENTER);
-        manaTextPaint.setTextSize(40);
-        manaTextPaint.setAntiAlias(true);
-        canvas.drawText(Integer.toString(mana), x + 195.0f, y + 105f, manaTextPaint);
+        if(mana != 0) {
+            Paint manaTextPaint = new Paint();
+            manaTextPaint.setColor(Color.BLACK);
+            manaTextPaint.setTextAlign(Paint.Align.CENTER);
+            manaTextPaint.setTextSize(40);
+            manaTextPaint.setAntiAlias(true);
+            canvas.drawText(Integer.toString(mana), x + cardWidth - 30.0f, y + 90.0f, manaTextPaint);
+        }
 
         //draws a forbidden icon (green circle place holder for now) if the card is forbidden
         if(isForbidden){
             Paint forbiddenSymbolPaint = new Paint();
             forbiddenSymbolPaint.setColor(Color.GREEN);
-            canvas.drawCircle(x + 30.0f, y + 125.0f, 15.0f, forbiddenSymbolPaint);
+            canvas.drawCircle(x + 25.0f, y + 95.0f, 12.5f, forbiddenSymbolPaint);
         }
 
         //draws the effect text at the bottom of the card if needed
         if(hasCardText){
             Paint effectTextPaint = new Paint();
             effectTextPaint.setColor(Color.BLACK);
-            effectTextPaint.setTextSize(20);
+            effectTextPaint.setTextSize(25);
             effectTextPaint.setAntiAlias(true);
-            ArrayList<String> wrappedEffectText = textLineWrap(effectText, 205.0f,
+            ArrayList<String> wrappedEffectText = textLineWrap(effectText, cardWidth - 30.0f,
                     effectTextPaint);
             for(int i = 0; i < wrappedEffectText.size(); i++){
-                canvas.drawText(wrappedEffectText.get(i), x + 10.0f, y + 250.0f + i * 15.0f,
+                canvas.drawText(wrappedEffectText.get(i), x + 10.0f, y + cardHeight - 80.0f + i * 22.5f,
                                 effectTextPaint);
             }
         }
@@ -124,28 +158,36 @@ public class CustomSurfaceView extends SurfaceView {
             powerModTextPaint.setTextAlign(Paint.Align.CENTER);
 
             //adds a plus or minus to the front of the modifier
-            char powerModSign = '+';
-            if(powerMod < 0){
-                powerModSign = '-';
+            String powerModText = "";
+            if(powerMod > 0){
+                powerModText = "+";
             }
-            String powerModText = powerModSign + Integer.toString(powerMod);
+            powerModText += Integer.toString(powerMod);
 
-            canvas.drawText(powerModText, x + 112.5f, y + 270.0f,
+            canvas.drawText(powerModText, x + cardWidth/2, y + cardHeight - 25.0f,
                             powerModTextPaint);
         }
 
     }
 
     //draws a face down card on the screen
-    protected void drawFaceDownCard(Canvas canvas, float x, float y, Color cardBack){
-        //draw a filled square with the color cardBack at the x y coordinate
-        //reminder the origin refers to the top left of the card
+    protected void drawFaceDownCard(Canvas canvas, float x, float y, int cardBackColor){
+        //draws the card back's base color first
+        Paint cardBackFillPaint = new Paint();
+        cardBackFillPaint.setColor(cardBackColor);
+        canvas.drawRect(x, y, x + cardWidth, y + cardHeight, cardBackFillPaint);
 
+        //draws the outline of the card
         drawCardOutline(canvas, x, y);
 
-        //prints the string cheaty mages across the card (diagonally bottom left to top right)
-        //horizontally in two lines would also work but diagonally should be able to be done with
-        //drawTextOnPath
+        //prints the "cheaty mages" across the card
+        Paint cardBackTextPaint = new Paint();
+        cardBackTextPaint.setColor(Color.BLACK);
+        cardBackTextPaint.setTextAlign(Paint.Align.CENTER);
+        cardBackTextPaint.setTextSize(35.0f);
+        cardBackTextPaint.setAntiAlias(true);
+        canvas.drawText("CHEATY", x + 75.0f, y + 75.0f, cardBackTextPaint);
+        canvas.drawText("MAGES", x + 75.0f, y + 125.0f, cardBackTextPaint);
     }
 
     //draws the black border for the card outline
@@ -154,17 +196,17 @@ public class CustomSurfaceView extends SurfaceView {
         outlinePaint.setColor(Color.BLACK);
         outlinePaint.setStyle(Paint.Style.STROKE);
         outlinePaint.setStrokeWidth(10.0f);
-        canvas.drawRect(x, y, x + 225.0f, y + 300.0f, outlinePaint);
+        canvas.drawRect(x, y, x + cardWidth, y + cardHeight, outlinePaint);
     }
 
     //draws the card name at the top of the card
     protected void drawCardTitle(Canvas canvas, float x, float y, String text){
         Paint titlePaint = new Paint();
         titlePaint.setColor(Color.BLACK);
-        titlePaint.setTextSize(40);
+        titlePaint.setTextSize(35.0f);
         titlePaint.setTextAlign(Paint.Align.CENTER);
         titlePaint.setAntiAlias(true);
-        canvas.drawText(text, x + 112.5f, y + 60.0f, titlePaint);
+        canvas.drawText(text, x + cardWidth/2, y + 50.0f, titlePaint);
     }
 
     //converts a string into an array of smaller strings using a max pixel width
@@ -177,7 +219,7 @@ public class CustomSurfaceView extends SurfaceView {
         for (int i = 0; i <= text.length(); i++) {
             textPaint.getTextBounds(text, textStart, i, bounds);
             if(bounds.width() > width) {
-                splitText.add(text.substring(textStart, i - 1));
+                splitText.add(text.substring(textStart, i));
                 textStart = i;
             }
         }
