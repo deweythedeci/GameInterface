@@ -47,4 +47,32 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
+    <LinearLayout
+        android:id="@+id/ButtonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom|right"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/passButton"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="10sp"
+            android:drawableTop="@drawable/ic_pass"
+            android:text="Pass"
+            android:textSize="14sp" />
+
+
+        <Button
+            android:id="@+id/detectMagicButton"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="20sp"
+            android:text="Detect Magic"
+            android:drawableTop="@drawable/ic_magnifying_glass"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

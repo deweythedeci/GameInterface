@@ -185,3 +185,5 @@ public class CustomSurfaceView extends SurfaceView {
         return splitText;
     }
 }
+
+
