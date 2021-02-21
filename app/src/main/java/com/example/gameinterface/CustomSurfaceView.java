@@ -2,6 +2,7 @@ package com.example.gameinterface;
 
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.SurfaceView;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
@@ -24,15 +25,16 @@ public class CustomSurfaceView extends SurfaceView {
     }
 
     protected void onDraw(Canvas canvas){
-        drawFighterCard(canvas, 100, 200, "Skeleton", 7, 3);
+        drawFighterCard(canvas, 100, 200, "Skeleton", 7, 3,
+                false);
         drawSpellCard(canvas, 400, 200, "Might", 2, 1,+3,
-                false, "", false);
+                false, "", true);
     }
 
     //draws a fighter card on the screen
     //x and y are the top left corner of the card
     protected void drawFighterCard(Canvas canvas, float x, float y, String fighterName,
-                                   int power, int prizeGold){
+                                   int power, int prizeGold, boolean hasBet){
         drawCardOutline(canvas, x, y);
         drawCardTitle(canvas, x, y, fighterName);
 
@@ -54,6 +56,8 @@ public class CustomSurfaceView extends SurfaceView {
         canvas.drawText(Integer.toString(power), x + 50.0f, y + 270.0f, statText);
         canvas.drawText(Integer.toString(prizeGold), x + 175.0f, y + 270.0f, statText);
 
+        //draws a yellow translucent border around the card if hasBet is true
+
     }
 
     //draws a spell card on the screen
@@ -62,25 +66,25 @@ public class CustomSurfaceView extends SurfaceView {
     //spell types: 1 = direct, 2 = enchant, 3 = support
     protected void drawSpellCard(Canvas canvas, float x, float y, String spellName, int mana,
                                  int spellType, int powerMod, boolean hasCardText,
-                                 String textEffect, boolean isForbidden){
+                                 String effectText, boolean isForbidden){
         drawCardOutline(canvas, x, y);
         drawCardTitle(canvas, x, y, spellName);
 
         //draws a symbol according to the spell's type
         //colored circles are used as stand ins for now
-        Paint symbolPaint = new Paint();
+        Paint spellTypeSymbolPaint = new Paint();
         switch(spellType){
             case 1:
-                symbolPaint.setColor(Color.RED);
+                spellTypeSymbolPaint.setColor(Color.RED);
                 break;
             case 2:
-                symbolPaint.setColor(Color.BLUE);
+                spellTypeSymbolPaint.setColor(Color.BLUE);
                 break;
             case 3:
-                symbolPaint.setColor(Color.YELLOW);
+                spellTypeSymbolPaint.setColor(Color.YELLOW);
                 break;
         }
-        canvas.drawCircle(x + 30.0f, y + 90.0f, 15.0f, symbolPaint);
+        canvas.drawCircle(x + 30.0f, y + 90.0f, 15.0f, spellTypeSymbolPaint);
 
         //draws mana cost on the card
         Paint manaTextPaint = new Paint();
@@ -90,13 +94,45 @@ public class CustomSurfaceView extends SurfaceView {
         manaTextPaint.setAntiAlias(true);
         canvas.drawText(Integer.toString(mana), x + 195.0f, y + 105f, manaTextPaint);
 
-        //draws a symbol (green circle place holder is fine for now) under the spell type symbol
-        //if the isForbidden parameter is true
+        //draws a forbidden icon (green circle place holder for now) if the card is forbidden
+        if(isForbidden){
+            Paint forbiddenSymbolPaint = new Paint();
+            forbiddenSymbolPaint.setColor(Color.GREEN);
+            canvas.drawCircle(x + 30.0f, y + 125.0f, 15.0f, forbiddenSymbolPaint);
+        }
 
-        //draws the effect text at the bottom of the card if hasCardText is true
+        //draws the effect text at the bottom of the card if needed
+        if(hasCardText){
+            Paint effectTextPaint = new Paint();
+            effectTextPaint.setColor(Color.BLACK);
+            effectTextPaint.setTextSize(20);
+            effectTextPaint.setAntiAlias(true);
+            ArrayList<String> wrappedEffectText = textLineWrap(effectText, 205.0f,
+                    effectTextPaint);
+            for(int i = 0; i < wrappedEffectText.size(); i++){
+                canvas.drawText(wrappedEffectText.get(i), x + 10.0f, y + 250.0f + i * 15.0f,
+                                effectTextPaint);
+            }
+        }
 
-        //draws the power modifier on the bottom of the card if hasCardText is false (no cards
-        //with unique card text modify power as far as I have seen)
+        //draws the power modifier on the bottom of the card if no card text is present
+        else{
+            Paint powerModTextPaint = new Paint();
+            powerModTextPaint.setColor(Color.BLACK);
+            powerModTextPaint.setTextSize(40.0f);
+            powerModTextPaint.setAntiAlias(true);
+            powerModTextPaint.setTextAlign(Paint.Align.CENTER);
+
+            //adds a plus or minus to the front of the modifier
+            char powerModSign = '+';
+            if(powerMod < 0){
+                powerModSign = '-';
+            }
+            String powerModText = powerModSign + Integer.toString(powerMod);
+
+            canvas.drawText(powerModText, x + 112.5f, y + 270.0f,
+                            powerModTextPaint);
+        }
 
     }
 
@@ -133,20 +169,19 @@ public class CustomSurfaceView extends SurfaceView {
 
     //converts a string into an array of smaller strings using a max pixel width
     //this is intended be used to wrap text within a certain width
+    //this code is functional for now but will cut off words and will need to be altered
     protected ArrayList<String> textLineWrap(String text, float width, Paint textPaint){
         Rect bounds = new Rect();
         ArrayList<String> splitText = new ArrayList<String>();
         int textStart = 0;
-        while(textStart < text.length()) {
-            for (int i = 1; i <= text.length(); i++) {
-                textPaint.getTextBounds(text, textStart, i, bounds);
-                if(bounds.width() > width) {
-                    splitText.add(text.substring(textStart, i));
-                    textStart = i;
-                    break;
-                }
+        for (int i = 0; i <= text.length(); i++) {
+            textPaint.getTextBounds(text, textStart, i, bounds);
+            if(bounds.width() > width) {
+                splitText.add(text.substring(textStart, i - 1));
+                textStart = i;
             }
         }
+        splitText.add(text.substring(textStart));
         return splitText;
     }
 }
