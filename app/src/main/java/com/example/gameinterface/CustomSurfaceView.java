@@ -52,6 +52,7 @@ public class CustomSurfaceView extends SurfaceView {
                 true);
         drawSpellCard(canvas, 650, 2000, "Giantism", 10, 2,+12,
                 false, "", true);
+        drawCoin(canvas, 1400, -45, "C");
     }
 
     //draws a fighter card on the screen
@@ -225,5 +226,23 @@ public class CustomSurfaceView extends SurfaceView {
         }
         splitText.add(text.substring(textStart));
         return splitText;
+    }
+
+
+    //draws a coin on the screen
+    //x and y are the top left corner of the coin
+    protected void drawCoin(Canvas canvas, float x, float y, String coinDesign) {
+
+        //draws the circle for the gold coin
+        Paint gold = new Paint();
+        gold.setColor(Color.YELLOW);
+        canvas.drawCircle(x + 175.0f, y + 250.0f, 60.0f, gold);
+
+        //draws the text for the fighter's stats
+        Paint statText = new Paint();
+        statText.setColor(Color.BLACK);
+        statText.setTextSize(50);
+        statText.setTextAlign(Paint.Align.CENTER);
+        canvas.drawText(coinDesign, x + 175.0f, y + 270.0f, statText);
     }
 }

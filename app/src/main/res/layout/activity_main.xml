@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/CoinTotal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginStart="20sp"
@@ -11,21 +12,29 @@
     android:background="@android:color/white"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/roundNumber"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#FFFFFF"
-        android:foregroundGravity="top|right"
-        android:gravity="right|top"
-        android:text="Round 2"
-        android:textSize="40sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+    <LinearLayout
+        android:id="@+id/roundAndCoin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/roundNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Round 2"
+            android:textSize="40sp" />
+
+        <TextView
+            android:id="@+id/coinTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20sp"
+            android:text="5"
+            android:textSize="40sp" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/judgeLabel"
@@ -46,5 +55,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
+
+    <LinearLayout
+        android:id="@+id/ButtonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom|right"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/passButton"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="10sp"
+            android:drawableTop="@drawable/ic_pass"
+            android:text="Pass"
+            android:textSize="14sp" />
+
+
+        <Button
+            android:id="@+id/detectMagicButton"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="20sp"
+            android:drawableTop="@drawable/ic_magnifying_glass"
+            android:text="Detect Magic"
+            android:textSize="13sp" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
