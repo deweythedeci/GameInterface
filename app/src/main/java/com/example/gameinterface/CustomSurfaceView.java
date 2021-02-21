@@ -28,21 +28,25 @@ public class CustomSurfaceView extends SurfaceView {
     }
 
     protected void onDraw(Canvas canvas){
-        drawFighterCard(canvas, 50, 400, "Orc", 2, 8,
+        boolean[] moriaDisallows = {false, false, true, false};
+        drawJudgeCard(canvas, 15, 120, "Moria", 12,
+                "Dispel", moriaDisallows);
+
+        drawFighterCard(canvas, 50, 430, "Orc", 2, 8,
                 true);
-        drawFighterCard(canvas, 50, 700, "Ghost", 5, 5,
+        drawFighterCard(canvas, 50, 730, "Ghost", 5, 5,
                 false);
-        drawFighterCard(canvas, 50, 1000, "Dragon", 10, 3,
+        drawFighterCard(canvas, 50, 1030, "Dragon", 10, 3,
                 true);
-        drawFighterCard(canvas, 50, 1300, "Skeleton", 7, 3,
+        drawFighterCard(canvas, 50, 1330, "Skeleton", 7, 3,
                 false);
-        drawFighterCard(canvas, 50, 1600, "Goblin", 1, 10,
+        drawFighterCard(canvas, 50, 1630, "Goblin", 1, 10,
                 false);
-        drawSpellCard(canvas, 300, 400, "Healing", 1, 1,+4,
+        drawSpellCard(canvas, 300, 430, "Healing", 1, 1,+4,
                 false, "", false);
-        drawSpellCard(canvas, 300, 700, "Blizzard", 4, 1,-6,
+        drawSpellCard(canvas, 300, 730, "Blizzard", 4, 1,-6,
                 false, "", false);
-        drawFaceDownCard(canvas, 300, 1000, Color.GRAY);
+        drawFaceDownCard(canvas, 300, 1030, Color.GRAY);
 
         drawSpellCard(canvas, 50, 2000, "Might", 4, 2,+5,
                 false, "", false);
@@ -171,6 +175,60 @@ public class CustomSurfaceView extends SurfaceView {
 
     }
 
+    //draws a judge card on the screen
+    //disallows shows which card types this judge bans
+    // In order: direct, enchant, support, forbidden
+    protected void drawJudgeCard(Canvas canvas, float x, float y, String judgeName, int manaLimit,
+                                 String judgementType, boolean[] disallows){
+
+        drawCardOutline(canvas, x, y);
+        drawCardTitle(canvas, x, y, judgeName);
+
+        //writes the mana limit on the card
+        Paint manaLimitTextPaint = new Paint();
+        manaLimitTextPaint.setColor(Color.BLACK);
+        manaLimitTextPaint.setTextAlign(Paint.Align.CENTER);
+        manaLimitTextPaint.setTextSize(30.0f);
+        manaLimitTextPaint.setAntiAlias(true);
+        canvas.drawText(Integer.toString(manaLimit), x + 30.0f,y + cardHeight - 75.0f,
+                        manaLimitTextPaint);
+
+        //writes judgement type on the card
+        Paint judgementTextPaint = new Paint();
+        judgementTextPaint.setColor(Color.BLACK);
+        judgementTextPaint.setTextSize(30.0f);
+        manaLimitTextPaint.setTextAlign(Paint.Align.RIGHT);
+        judgementTextPaint.setAntiAlias(true);
+        canvas.drawText(judgementType, x + cardWidth - 90.0f,y + cardHeight - 75.0f,
+                judgementTextPaint);
+
+        //draws symbols of cards this judge disallows at bottom of card
+        Paint symbolPaint = new Paint();
+        int symbolsDrawn = 0;
+        for(int i = 0; i < 4; i++){
+            if(disallows[i]){
+                switch(i){
+                    case 1:
+                        symbolPaint.setColor(Color.RED);
+                        break;
+                    case 2:
+                        symbolPaint.setColor(Color.BLUE);
+                        break;
+                    case 3:
+                        symbolPaint.setColor(0xFFFFD700);
+                        break;
+                    case 4:
+                        symbolPaint.setColor(Color.GREEN);
+                        break;
+                }
+                canvas.drawCircle(x + 25.0f + symbolsDrawn * 25.0f, y + cardHeight - 40.0f,
+                                12.5f, symbolPaint);
+                symbolsDrawn++;
+            }
+        }
+
+    }
+
     //draws a face down card on the screen
     protected void drawFaceDownCard(Canvas canvas, float x, float y, int cardBackColor){
         //draws the card back's base color first
@@ -185,10 +243,10 @@ public class CustomSurfaceView extends SurfaceView {
         Paint cardBackTextPaint = new Paint();
         cardBackTextPaint.setColor(Color.BLACK);
         cardBackTextPaint.setTextAlign(Paint.Align.CENTER);
-        cardBackTextPaint.setTextSize(35.0f);
+        cardBackTextPaint.setTextSize(45.0f);
         cardBackTextPaint.setAntiAlias(true);
-        canvas.drawText("CHEATY", x + 75.0f, y + 75.0f, cardBackTextPaint);
-        canvas.drawText("MAGES", x + 75.0f, y + 125.0f, cardBackTextPaint);
+        canvas.drawText("CHEATY", x + cardWidth/2, y + 110.0f, cardBackTextPaint);
+        canvas.drawText("MAGES", x + cardWidth/2, y + cardHeight - 70.0f, cardBackTextPaint);
     }
 
     //draws the black border for the card outline
