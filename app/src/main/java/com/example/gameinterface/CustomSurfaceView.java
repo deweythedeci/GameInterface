@@ -21,7 +21,7 @@ public class CustomSurfaceView extends SurfaceView {
     }
 
     protected void onDraw(Canvas canvas){
-        drawFighterCard(canvas, 25, 25, "Skeleton", 7, 3);
+        drawFighterCard(canvas, 250, 1000, "Skeleton", 7, 3);
     }
 
     //draws a fighter card on the screen
@@ -31,19 +31,29 @@ public class CustomSurfaceView extends SurfaceView {
         drawCardOutline(canvas, x, y);
         drawCardTitle(canvas, x, y, fighterName);
 
-        //  draws the fighters stats on the card
-
         //draws the circle for the fighter's power
         Paint red = new Paint();
         red.setColor(Color.RED);
-        canvas.drawCircle(x + 50.0f, y + 250.0f, 20.0f, red);
+        canvas.drawCircle(x + 50.0f, y + 250.0f, 30.0f, red);
 
         //draws the circle for the fighter's prize gold
         Paint gold = new Paint();
         gold.setColor(Color.YELLOW);
-        canvas.drawCircle(x + 175.0f, y + 250.0f, 20.0f, gold);
+        canvas.drawCircle(x + 175.0f, y + 250.0f, 30.0f, gold);
+
+        //draws the text for the fighter's stats
+        Paint statText = new Paint();
+        statText.setColor(Color.BLACK);
+        statText.setTextSize(50);
+        statText.setTextAlign(Paint.Align.CENTER);
+        canvas.drawText(Integer.toString(power), x + 50.0f, y + 270.0f, statText);
+        canvas.drawText(Integer.toString(prizeGold), x + 175.0f, y + 270.0f, statText);
 
     }
+
+    //draws a spell card on the screen
+
+    //draws a face down card on the screen
 
     //draws the black border for the card outline
     protected void drawCardOutline(Canvas canvas, float x, float y){
@@ -58,8 +68,8 @@ public class CustomSurfaceView extends SurfaceView {
     protected void drawCardTitle(Canvas canvas, float x, float y, String text){
         Paint titleText = new Paint();
         titleText.setColor(Color.BLACK);
-        titleText.setTextSize(40);
+        titleText.setTextSize(50);
         titleText.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText(text, x + 112.5f, y + 50.0f, titleText);
+        canvas.drawText(text, x + 112.5f, y + 60.0f, titleText);
     }
 }
