@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class CustomSurfaceView extends SurfaceView {
 
-    public CustomSurfaceView(Context context, AttributeSet attrs){
+    public CustomSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setWillNotDraw(false);
 
@@ -24,17 +24,18 @@ public class CustomSurfaceView extends SurfaceView {
         this.getHolder().setFormat(PixelFormat.TRANSLUCENT);
     }
 
-    protected void onDraw(Canvas canvas){
+    protected void onDraw(Canvas canvas) {
         drawFighterCard(canvas, 100, 200, "Skeleton", 7, 3,
                 false);
-        drawSpellCard(canvas, 400, 200, "Might", 2, 1,+3,
+        drawSpellCard(canvas, 400, 200, "Might", 2, 1, +3,
                 false, "", true);
+        drawCoin(canvas, 1400, -45, "C");
     }
 
     //draws a fighter card on the screen
     //x and y are the top left corner of the card
     protected void drawFighterCard(Canvas canvas, float x, float y, String fighterName,
-                                   int power, int prizeGold, boolean hasBet){
+                                   int power, int prizeGold, boolean hasBet) {
         drawCardOutline(canvas, x, y);
         drawCardTitle(canvas, x, y, fighterName);
 
@@ -66,14 +67,14 @@ public class CustomSurfaceView extends SurfaceView {
     //spell types: 1 = direct, 2 = enchant, 3 = support
     protected void drawSpellCard(Canvas canvas, float x, float y, String spellName, int mana,
                                  int spellType, int powerMod, boolean hasCardText,
-                                 String effectText, boolean isForbidden){
+                                 String effectText, boolean isForbidden) {
         drawCardOutline(canvas, x, y);
         drawCardTitle(canvas, x, y, spellName);
 
         //draws a symbol according to the spell's type
         //colored circles are used as stand ins for now
         Paint spellTypeSymbolPaint = new Paint();
-        switch(spellType){
+        switch (spellType) {
             case 1:
                 spellTypeSymbolPaint.setColor(Color.RED);
                 break;
@@ -95,28 +96,28 @@ public class CustomSurfaceView extends SurfaceView {
         canvas.drawText(Integer.toString(mana), x + 195.0f, y + 105f, manaTextPaint);
 
         //draws a forbidden icon (green circle place holder for now) if the card is forbidden
-        if(isForbidden){
+        if (isForbidden) {
             Paint forbiddenSymbolPaint = new Paint();
             forbiddenSymbolPaint.setColor(Color.GREEN);
             canvas.drawCircle(x + 30.0f, y + 125.0f, 15.0f, forbiddenSymbolPaint);
         }
 
         //draws the effect text at the bottom of the card if needed
-        if(hasCardText){
+        if (hasCardText) {
             Paint effectTextPaint = new Paint();
             effectTextPaint.setColor(Color.BLACK);
             effectTextPaint.setTextSize(20);
             effectTextPaint.setAntiAlias(true);
             ArrayList<String> wrappedEffectText = textLineWrap(effectText, 205.0f,
                     effectTextPaint);
-            for(int i = 0; i < wrappedEffectText.size(); i++){
+            for (int i = 0; i < wrappedEffectText.size(); i++) {
                 canvas.drawText(wrappedEffectText.get(i), x + 10.0f, y + 250.0f + i * 15.0f,
-                                effectTextPaint);
+                        effectTextPaint);
             }
         }
 
         //draws the power modifier on the bottom of the card if no card text is present
-        else{
+        else {
             Paint powerModTextPaint = new Paint();
             powerModTextPaint.setColor(Color.BLACK);
             powerModTextPaint.setTextSize(40.0f);
@@ -125,19 +126,19 @@ public class CustomSurfaceView extends SurfaceView {
 
             //adds a plus or minus to the front of the modifier
             char powerModSign = '+';
-            if(powerMod < 0){
+            if (powerMod < 0) {
                 powerModSign = '-';
             }
             String powerModText = powerModSign + Integer.toString(powerMod);
 
             canvas.drawText(powerModText, x + 112.5f, y + 270.0f,
-                            powerModTextPaint);
+                    powerModTextPaint);
         }
 
     }
 
     //draws a face down card on the screen
-    protected void drawFaceDownCard(Canvas canvas, float x, float y, Color cardBack){
+    protected void drawFaceDownCard(Canvas canvas, float x, float y, Color cardBack) {
         //draw a filled square with the color cardBack at the x y coordinate
         //reminder the origin refers to the top left of the card
 
@@ -149,7 +150,7 @@ public class CustomSurfaceView extends SurfaceView {
     }
 
     //draws the black border for the card outline
-    protected void drawCardOutline(Canvas canvas, float x, float y){
+    protected void drawCardOutline(Canvas canvas, float x, float y) {
         Paint outlinePaint = new Paint();
         outlinePaint.setColor(Color.BLACK);
         outlinePaint.setStyle(Paint.Style.STROKE);
@@ -158,7 +159,7 @@ public class CustomSurfaceView extends SurfaceView {
     }
 
     //draws the card name at the top of the card
-    protected void drawCardTitle(Canvas canvas, float x, float y, String text){
+    protected void drawCardTitle(Canvas canvas, float x, float y, String text) {
         Paint titlePaint = new Paint();
         titlePaint.setColor(Color.BLACK);
         titlePaint.setTextSize(40);
@@ -170,19 +171,37 @@ public class CustomSurfaceView extends SurfaceView {
     //converts a string into an array of smaller strings using a max pixel width
     //this is intended be used to wrap text within a certain width
     //this code is functional for now but will cut off words and will need to be altered
-    protected ArrayList<String> textLineWrap(String text, float width, Paint textPaint){
+    protected ArrayList<String> textLineWrap(String text, float width, Paint textPaint) {
         Rect bounds = new Rect();
         ArrayList<String> splitText = new ArrayList<String>();
         int textStart = 0;
         for (int i = 0; i <= text.length(); i++) {
             textPaint.getTextBounds(text, textStart, i, bounds);
-            if(bounds.width() > width) {
+            if (bounds.width() > width) {
                 splitText.add(text.substring(textStart, i - 1));
                 textStart = i;
             }
         }
         splitText.add(text.substring(textStart));
         return splitText;
+    }
+
+
+    //draws a coin on the screen
+    //x and y are the top left corner of the coin
+    protected void drawCoin(Canvas canvas, float x, float y, String coinDesign) {
+
+        //draws the circle for the gold coin
+        Paint gold = new Paint();
+        gold.setColor(Color.YELLOW);
+        canvas.drawCircle(x + 175.0f, y + 250.0f, 60.0f, gold);
+
+        //draws the text for the fighter's stats
+        Paint statText = new Paint();
+        statText.setColor(Color.BLACK);
+        statText.setTextSize(50);
+        statText.setTextAlign(Paint.Align.CENTER);
+        canvas.drawText(coinDesign, x + 175.0f, y + 270.0f, statText);
     }
 }
 
