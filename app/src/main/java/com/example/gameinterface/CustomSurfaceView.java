@@ -1,6 +1,5 @@
 package com.example.gameinterface;
 
-import android.graphics.PixelFormat;
 import android.view.SurfaceView;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
