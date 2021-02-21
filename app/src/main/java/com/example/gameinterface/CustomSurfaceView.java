@@ -21,12 +21,28 @@ public class CustomSurfaceView extends SurfaceView {
     }
 
     protected void onDraw(Canvas canvas){
-        drawFighterCard(canvas, 25, 25, "Skeleton");
+        drawFighterCard(canvas, 25, 25, "Skeleton", 7, 3);
     }
 
-    protected void drawFighterCard(Canvas canvas, float x, float y, String fighterName){
+    //draws a fighter card on the screen
+    //x and y are the top left corner of the card
+    protected void drawFighterCard(Canvas canvas, float x, float y, String fighterName,
+                                   int power, int prizeGold){
         drawCardOutline(canvas, x, y);
         drawCardTitle(canvas, x, y, fighterName);
+
+        //  draws the fighters stats on the card
+
+        //draws the circle for the fighter's power
+        Paint red = new Paint();
+        red.setColor(Color.RED);
+        canvas.drawCircle(x + 50.0f, y + 250.0f, 20.0f, red);
+
+        //draws the circle for the fighter's prize gold
+        Paint gold = new Paint();
+        gold.setColor(Color.YELLOW);
+        canvas.drawCircle(x + 175.0f, y + 250.0f, 20.0f, gold);
+
     }
 
     //draws the black border for the card outline
@@ -39,7 +55,6 @@ public class CustomSurfaceView extends SurfaceView {
     }
 
     //draws the card name at the top of the card
-    //x and y are the top left corner of the card
     protected void drawCardTitle(Canvas canvas, float x, float y, String text){
         Paint titleText = new Paint();
         titleText.setColor(Color.BLACK);
@@ -47,5 +62,4 @@ public class CustomSurfaceView extends SurfaceView {
         titleText.setTextAlign(Paint.Align.CENTER);
         canvas.drawText(text, x + 112.5f, y + 50.0f, titleText);
     }
-
 }
